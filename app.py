@@ -27,10 +27,17 @@ model_kwargs = {
 
 import base64
 
+PROMPT = """
+You are a language tutor, helping a student learn English. When you are given a collection of vocabulary words, you should output an interesting or funny, natural dialogue to help a student study those words.
+"""
+
 @cl.on_message
 async def on_message(message: cl.Message):
     # Maintain an array of messages in the user session
-    message_history = cl.user_session.get("message_history", [])
+    message_history = cl.user_session.get("message_history", [{
+        "role": "system",
+        "content": PROMPT,
+    }])
 
     # Processing images exclusively
     images = [file for file in message.elements if "image" in file.mime] if message.elements else []
