@@ -1,37 +1,43 @@
 import chainlit as cl
 import openai
 import os
+import base64
+from langsmith.wrappers import wrap_openai
+from langsmith import traceable
 
-api_key = os.getenv("OPENAI_API_KEY")
+config = {
+    "api_key": os.getenv("OPENAI_API_KEY"),
+    "endpoint_url": "https://api.openai.com/v1"
+}
 
-#api_key = os.getenv("RUNPOD_API_KEY")
-#runpod_serverless_id = os.getenv("RUNPOD_SERVERLESS_ID")
-
-endpoint_url = "https://api.openai.com/v1"
-#endpoint_url = f"https://api.runpod.ai/v2/{runpod_serverless_id}/openai/v1"
-
-client = openai.AsyncClient(api_key=api_key, base_url=endpoint_url)
-
-# https://platform.openai.com/docs/models/gpt-4o
-model_kwargs = {
+model_kwargs = { # https://platform.openai.com/docs/models/gpt-4o
     "model": "chatgpt-4o-latest",
     "temperature": 1.2,
     "max_tokens": 500
 }
 
-#model_kwargs = {
+# runpod_serverless_id = os.getenv("RUNPOD_SERVERLESS_ID")
+# config = {
+#     "api_key": os.getenv("RUNPOD_API_KEY"),
+#     "endpoint_url": f"https://api.runpod.ai/v2/{runpod_serverless_id}/openai/v1"
+# model_kwargs = {
 #    "model": "mistralai/Mistral-7B-Instruct-v0.3",
 #    "temperature": 0.3,
 #    "max_tokens": 500
-#}
+# }
 
-import base64
+client = wrap_openai(openai.AsyncClient(api_key=config["api_key"], base_url=config["endpoint_url"]))
 
 PROMPT = """
 You are a language tutor, helping a student learn English. When you are given a collection of vocabulary words, you should output an interesting or funny, natural dialogue to help a student study those words.
 """
 
+@traceable
+def foo(s: str):
+    pass
+
 @cl.on_message
+@traceable
 async def on_message(message: cl.Message):
     # Maintain an array of messages in the user session
     message_history = cl.user_session.get("message_history", [{
