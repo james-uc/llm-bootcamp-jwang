@@ -11,7 +11,7 @@ config = {
 }
 
 model_kwargs = { # https://platform.openai.com/docs/models/gpt-4o
-    "model": "chatgpt-4o-latest",
+    "model": "gpt-4o-mini",
     "temperature": 1.2,
     "max_tokens": 500
 }
