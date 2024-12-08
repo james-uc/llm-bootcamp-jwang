@@ -32,11 +32,6 @@ client = wrap_openai(
 )
 
 
-@traceable
-def foo(s: str):
-    pass
-
-
 @cl.on_message
 @traceable
 async def on_message(message: cl.Message):
